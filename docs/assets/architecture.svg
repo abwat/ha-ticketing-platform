@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="980" height="430" viewBox="0 0 980 430">
+  <rect width="980" height="430" fill="#f8fafc"/>
+  <text x="40" y="48" font-family="Arial" font-size="26" font-weight="700" fill="#111827">HA Ticketing Platform Architecture</text>
+  <g font-family="Arial" font-size="15" fill="#111827">
+    <rect x="50" y="100" width="140" height="70" rx="8" fill="#dbeafe" stroke="#2563eb"/>
+    <text x="84" y="140">API Client</text>
+    <rect x="260" y="90" width="170" height="90" rx="8" fill="#dcfce7" stroke="#16a34a"/>
+    <text x="302" y="128">FastAPI Service</text>
+    <text x="292" y="154" font-size="13">validation + routes</text>
+    <rect x="500" y="70" width="170" height="80" rx="8" fill="#fef3c7" stroke="#d97706"/>
+    <text x="548" y="108">Repository</text>
+    <text x="533" y="132" font-size="13">SQLite/Postgres</text>
+    <rect x="500" y="190" width="170" height="80" rx="8" fill="#ede9fe" stroke="#7c3aed"/>
+    <text x="551" y="228">Event Bus</text>
+    <text x="535" y="252" font-size="13">async workflow</text>
+    <rect x="740" y="120" width="170" height="80" rx="8" fill="#fee2e2" stroke="#dc2626"/>
+    <text x="784" y="158">SRE Signals</text>
+    <text x="762" y="182" font-size="13">metrics, SLOs, alerts</text>
+  </g>
+  <g stroke="#475569" stroke-width="2" fill="none" marker-end="url(#arrow)">
+    <path d="M190 135 L260 135"/>
+    <path d="M430 125 L500 110"/>
+    <path d="M430 150 L500 220"/>
+    <path d="M670 110 L740 150"/>
+    <path d="M670 230 L740 175"/>
+  </g>
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto">
+      <path d="M0,0 L0,6 L9,3 z" fill="#475569"/>
+    </marker>
+  </defs>
+</svg>
+

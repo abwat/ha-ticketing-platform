@@ -1,0 +1,9 @@
+[project]
+name = "ha-ticketing-platform"
+version = "0.1.0"
+description = "Reliability-focused FastAPI ticketing platform."
+requires-python = ">=3.11"
+
+[tool.pytest.ini_options]
+pythonpath = ["src"]
+

@@ -1,0 +1,2 @@
+"""HA ticketing platform package."""
+

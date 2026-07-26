@@ -1,0 +1,22 @@
+{
+  "title": "HA Ticketing Platform",
+  "schemaVersion": 39,
+  "panels": [
+    {
+      "type": "stat",
+      "title": "Pending Events",
+      "targets": [{"expr": "ticketing_pending_events"}]
+    },
+    {
+      "type": "stat",
+      "title": "Overdue Tickets",
+      "targets": [{"expr": "ticketing_overdue_tickets"}]
+    },
+    {
+      "type": "timeseries",
+      "title": "Tickets By Status",
+      "targets": [{"expr": "ticketing_tickets_total"}]
+    }
+  ]
+}
+
