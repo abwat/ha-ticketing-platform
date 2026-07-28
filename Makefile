@@ -1,10 +1,18 @@
-.PHONY: test compile run demo load-smoke event-contract compose-up compose-down
+.PHONY: test compile lint typecheck ci run demo load-smoke event-contract compose-up compose-down
 
 test:
 	PYTHONPATH=src python3 -m unittest discover -s tests
 
 compile:
 	PYTHONPYCACHEPREFIX=.pycache_tmp python3 -m compileall src tests scripts
+
+lint:
+	python3 -m ruff check src tests scripts
+
+typecheck:
+	python3 -m mypy src
+
+ci: test compile
 
 run:
 	uvicorn ticketing.main:app --reload --app-dir src
@@ -23,4 +31,3 @@ compose-up:
 
 compose-down:
 	docker compose down
-
