@@ -77,6 +77,46 @@ class TicketApiTest(unittest.TestCase):
         self.assertIn('ticketing_tickets_total{status="open"} 1', metrics.text)
         self.assertIn("ticketing_pending_events 1", metrics.text)
 
+    def test_ticket_list_can_filter_by_status(self) -> None:
+        first = self.client.post(
+            "/tickets",
+            json={"title": "Printer jam", "priority": "low", "requester": "facilities"},
+        ).json()
+        second = self.client.post(
+            "/tickets",
+            json={"title": "Database alerts", "priority": "high", "requester": "ops"},
+        ).json()
+
+        assigned = self.client.post(
+            f"/tickets/{second['id']}/assign",
+            json={"assignee": "oncall"},
+        )
+        self.assertEqual(assigned.status_code, 200)
+
+        open_tickets = self.client.get("/tickets", params={"status": "open"})
+        self.assertEqual(open_tickets.status_code, 200)
+        self.assertEqual([ticket["id"] for ticket in open_tickets.json()], [first["id"]])
+
+    def test_missing_ticket_paths_return_404(self) -> None:
+        ticket = self.client.get("/tickets/missing-ticket")
+        comments = self.client.get("/tickets/missing-ticket/comments")
+
+        self.assertEqual(ticket.status_code, 404)
+        self.assertEqual(comments.status_code, 404)
+
+    def test_event_drain_reports_processed_and_pending_counts(self) -> None:
+        for title in ("First alert", "Second alert"):
+            response = self.client.post(
+                "/tickets",
+                json={"title": title, "priority": "medium", "requester": "ops"},
+            )
+            self.assertEqual(response.status_code, 201)
+
+        drained = self.client.post("/events/drain")
+
+        self.assertEqual(drained.status_code, 200)
+        self.assertEqual(drained.json(), {"processed": 2, "pending": 0})
+
 
 if __name__ == "__main__":
     unittest.main()

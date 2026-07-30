@@ -1,5 +1,7 @@
 import tempfile
 import unittest
+from dataclasses import replace
+from datetime import datetime, timedelta, timezone
 
 from ticketing.events import EventBus
 from ticketing.models import Priority, TicketStatus
@@ -48,6 +50,29 @@ class TicketServiceTest(unittest.TestCase):
         comments = self.repo.list_comments(ticket.id)
         self.assertEqual(comments[0].id, comment.id)
         self.assertEqual(comments[0].body, "Investigating logs.")
+
+    def test_blank_assignee_is_rejected(self) -> None:
+        ticket = self.service.create_ticket("VPN down", "", Priority.CRITICAL, "ops")
+
+        with self.assertRaises(ValueError):
+            self.service.assign_ticket(ticket.id, "   ")
+
+    def test_overdue_tickets_excludes_resolved_items(self) -> None:
+        open_ticket = self.service.create_ticket("Open incident", "", Priority.HIGH, "ops")
+        resolved_ticket = self.service.create_ticket("Resolved incident", "", Priority.HIGH, "ops")
+        overdue_at = datetime.now(timezone.utc) - timedelta(minutes=5)
+        self.repo.save(replace(open_ticket, due_at=overdue_at))
+        self.repo.save(
+            replace(
+                resolved_ticket,
+                status=TicketStatus.RESOLVED,
+                due_at=overdue_at,
+            )
+        )
+
+        overdue = self.service.overdue_tickets()
+
+        self.assertEqual([ticket.id for ticket in overdue], [open_ticket.id])
 
 
 if __name__ == "__main__":
